@@ -1,32 +1,79 @@
 <!DOCTYPE html>
-<html lang = "en" >
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width = device width, initial scale = 1">
+    <title>Bobba The Explorer</title>
 
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    
+        body {
+            font-family: Trebuchet MS;
+            background: linear gradient(135deg, #667eea, #764ba2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
 
+        #gameContainer {
+            background: #f5f0e8;
+            width: 1200px;
+            height: 800 px;
+            border-radius: 20px;
+            position: relative;
+        }
 
+        #gameCanvas {
+            width: 100%;
+            height: 100%;
+            background: white;
+        }
 
+        .game-over {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            background: beige;
+            padding: 40px;
+            display: none;
+        }
 
-body {
-    font-family: "Trebuchet MS", Helvetica, sans-serif;
-    background: linear gradient(135, #667eea 0%, #764ba2 100% );
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    overflow: hidden;
-}
+        .game-over h2 {
+            font-size: 48px;
+            color: #667eea;
+        }
 
-#
-
-
-
+        .game-over button {
+            background: #667eea;
+            color: beige;
+            padding: 15px;
+            font-size: 24px;
+            border-radius: 10px;
+        }
+    </style>
 </head>
 
+<body>
+    <div id="gameContainer">
+        <canvas id=" gameCanvas" width="1200" height="800"></canvas>
 
+        <div class="game-over" id="gameOver">
+            <h2>Level Completed!</h2>
+            <p id="LevelStats"></p>
+            <button onclick="game.nextLevel()">Next Level</button>
+        </div>
+    </div>
 
+    <script>
+        const canvas = document.getElementByID("gameCanvas");
+        const ctx = canvas.getContext("2d");
 
-
-
-</html>
+        class Ingredient {
+            constructor(category, colour, cost) {
+                this.category = category;
