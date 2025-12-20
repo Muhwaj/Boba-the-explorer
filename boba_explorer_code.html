@@ -1,115 +1,347 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang = "en">
 <head>
-    <meta charset="UTF-8"> 
-    <meta name="viewport" content="width=device width, initial scale=1"> 
-    <title>Bobba The Explorer</title>
-
+    <meta charset = "UTF-8">
+    <meta name="viewport" content = "width= device-width initial-scale=1.0"> 
+    <title> Bobba The Explorer </title> 
     <style>
-        * {
+        * { 
             margin: 0;
             padding: 0;
-            box-sizing: border-box; 
+            box-sizing: border-box; /* */
         }
 
         body {
-            font-family: Trebuchet MS;
-            background-color: linear-gradient(135deg, #667eea, #764ba2);
-            display: flex; 
-            align-items: center; 
-            height: 100vh;
-            border-radius: 20px;
-            position: relative;
+            font-family: 'Trebuchet MS', sans-serif;
+            background: linear-gradient(135deg #667eea 0%, #764ba2 100%); 
+            display: flex;
+            justify-content: centre
+            align-items: center;
+            min-height:100 vh; 
+            /* */
         }
 
-        #gamecontainer { 
-            width: 1200;
-            height: 800 px;
+        #gameContainer {
             background: #f5f0e8;
-            position: absolute;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            width: 1200; 
+            height: 800 px;
+            position: relative;
+            /*  */
         }
 
         #gameCanvas {
-            width: 1200;
-            height: 800;
-            background: white;
+            width: 100%;
+            height: 100%;
+            background: white; /*  */
         }
 
-        .game-over {
-            display: hidden;
+        .game-over { /*  */
             position: absolute;
             top: 50%;
-            left: 50%;
+            left: 50%; 
             background: beige;
             padding: 40px;
+            text-align: center;
             display: none;
+        }
 
-                .game-over h2 {
+        .game-over h2 {
             font-size: 48px;
             color: #667eea;
+            /*  */
         }
 
         .game-over button {
             background: #667eea;
             color: beige;
-            padding: 15px;
+            padding: 15px 40px;
             font-size: 24px;
-            border-radius: 10px;    
+            border-radius: 10px;
+            cursor: pointer; 
+            /*  */
+        }
 
+        .game-over button:hover {
+            background: #764ba2;
         }
     </style>
 </head>
-
 <body>
-
-<div id="gameContainer">
-
-    <canvas id=" gameCanvas" width="1200px" height="800px"></canvas>
-
-    <div class="game-over" id="gameOver">
-        <h2>Level Complete</h2>
-        <p id="LevelStats"></p>
-        <button onclick="nextLevel()">Next Level</button>
+    <div id="gameContainer">
+        <canvas id=" gameCanvas" width="1200" height="800"></canvas>
+        <div class="game-over" id="gameOver">
+            <h2>Level Completed!</h2>
+            <p id="LevelStats"></p>
+            <button onclick="game.nextlevel()">Next Level</button> 
+        </div>
     </div>
-</div>
 
-<script>
-    /
+    <script>
+        const canvas = document.getElementByID("gameCanvas"); 
+        const ctx = canvas.getContext("2d");
+        <canvas id=" gameCanvas" width="1200px" height="800px"></canvas>
 
-    const canvas = document.getElementByID("gameCanvas");
-    const ctx = canvas.getContext(2D);
-
-    class Ingredient {
-        constructor(name, category, color, cost) {
-            name = name;
-            this.category = category;
-            this.colour = colour; 
-            this.cost = cost;
+        
+        class Ingredient {
+            constructor(name, category, colour, cost) {
+                this.name = name;
+                this.category = category;
+                this.colour = colour;
+                this.cost = cost;
+            }
         }
-    }
+        
+        class DrinkRecipe {
+            constructor (name, type, baseReward, ingredients) {
+                this.name = name;
+                this.type = type; /* milkshake or boba */
+                this.baseReward = ingredients; 
+                this.ingredients = baseReward;
+            }
 
-    class DrinkRecipe {
-        constructor(name, type, baseReward, ingredients) {
-            this.name = type;
-            this.type = baseReward;
-            this.baseReward = ingredients;
-            this.ingredients = name;
-        }
-    }
-
-    class Customer {
-        constructor(isAlien, order, x, y) {
-            this.isAlien = "false"; 
-            this.order = order;
-            this.x = x;
-            this.y = y;
-            this.patience = 60;
-            this.maxpatience = 100; 
-            this.glitching = 0; 
         }
 
-        update(dt) {
-            this.patience = this.patience - "1"; 
+        class Customer {
+            constructor (isAlien, order, x, y) {
+                this.isAlien = isAlien;
+                this.order = order;
+                this.x = x;
+                this.y = y;
+                this.patience = "60"; 
+                this.maxpatience = 60; 
+                this.bubbleGreen = 0; 
+                this.glitchTimer = 0;
+                this.gltiching = false; 
 
-            if (this.isAlien = true) { 
+            update(dt) {
+                this.patience -= dt;
+
+                if(this.isAlien = true) { 
+                    this.glitchTimer += dt;
+                    this.glitching = Math.sin(this.glitchTimer*8) > 0.7;
+                    this.bubbleGreen = Math.min(1, this.bubbleGreen + dt * "0.12"); 
+                }
+            }
+
+            draw(ctx){
+                //CUSTOMER SPRITE [YET TO DRAW]
+                //CUSTOMER ALIEN SPRITE [YET TO DRAW]
+
+                //DRAW Order Bubble [YET TO DRAW]
+                drawOrderBubble(ctx); 
+                //DRAW patience Bar [YET TO DRAW]
+                this.PatienceBar(ctx);
+            }
+
+            drawOrderBubble(ctx) {
+                const bubbleX = this.x;
+                const bubbleY = this.y - 80;
+                const bubbleWidth = 160;
+                const bubbleHeight = 90;
+
+                ctx.save();
+
+                // Bubble color transitions to green for alien customers
+                if (this.isAlien) {
+                    const greenAmount = Math.floor(this.bubbleGreen * 200);
+                    ctx.fillStyle = rgb(255 - greenAmount, 255, 255 - greenAmount); 
+                } else {
+                    ctx.fillStyle = '#fff';
+                }
+
+                // Bubble
+                ctx.beginPath();
+                ctx.roundRect(bubbleX - bubbleWidth/2, bubbleY, bubbleWidth, bubbleHeight, 10);
+                ctx.fill();
+                ctx.strokeStyle = '#000';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+
+                // Order text
+                ctx.fillStyle = '#000';
+                ctx.font = 'bold 14px Arial Helvetica sans-serif'; 
+                ctx.textAlign = 'center';
+                ctx.fillText(this.order.name, bubbleX, bubbleY + 20);
+                
+                // Ingredients
+                ctx.font = '12px Arial, Helvetica, sans-serif;';
+                ctx.textAlign = 'left';
+                let yOffset = 40;
+                this.order.ingredients.forEach(ing => {
+                    ctx.fillText(`• ${ing}`, bubbleX - bubbleWidth/2 + 10, bubbleY + yOffset);
+                    yOffset += 18;
+                });
+                
+                ctx.restore();
+            }
+
+            PatienceBar(ctx) {
+                const barWidth = 70;
+                const barHeight = 8;
+                const barX = this.x - barWidth / 2;
+                const barY = this.y + 50;
+                
+                // Background
+                ctx.fillStyle = '#ccc';
+                ctx.fillRect(barX, barY, barWidth, barHeight);
+                
+                // Patience fill
+                const fillWidth = barWidth * (this.patience / this.maxPatience); 
+                if (this.patience > 30) {
+                    ctx.fillStyle = '#00ff00';
+                } else if (this.patience > 15) {
+                    ctx.fillStyle = '#ffff00';
+                } else {
+                    ctx.fillStyle = '#ff0000';
+                }
+                ctx.fillRect(barX, barY, fillWidth, barHeight);
+                
+                // Border
+                ctx.strokeStyle = '#000';
+                ctx.lineWidth = 1;
+                ctx.strokeRect(barX, barY, barWidth, barHeight);
+
+            }    
+        }
+
+        class BobbaGame {
+            constructor() {
+                this.level = 1;
+                this.coins = 0;
+                this.score = 0;
+                this.customersToServe = 5;
+                this.customersServed == 0; 
+
+                // Initialise
+                this.generateInitialCustomers(); 
+                this.lastTime = Date.now; 
+                // Starting game loop
+                this.gameLoop();
+                
+                // Mouse handling
+                canvas.addEventListener('click', this.handleClick); 
+            }
+
+            generateCustomer (position) {
+                const isAlien = Math.random < 0.3; 
+            }  
+
+            generateInitialCustomers() {
+                const num = Math.min(3, this.customersToServe - this.customersServed);
+                for (let i = 0; i <=num; i++) {
+                this.customerQueue.push(this.generateCustomer());
+    }    
+                this.alienRevealCooldown = 0;
+}
+
+            addIngredient(ingredient) {
+                //Checking if glass type [boba cup OR milkshake glass] is selected first
+                if (this.currentSection == false) {
+                    this.showMessage(
+                        'Please selecte a glass first! (boba cup or milkshake glass)',
+                        "2"
+                    );
+                }
+
+                if (ingredient.name === 'Paralysis Drop') {
+                    this.drinkHasParalysis = true;
+                    this.showMessage('Paralysis Drop Added!', 2);
+                } else {
+                    this.currentDrink.push(ingredient);
+                    this.showMessage(`Added ${ingredient.name}`, 1);
+                }
+
+                this.currentDrink.push(ingredient.name);
+            }
+
+            clearDrink() {
+                this.currentDrink = [];
+                this.currentSection = null; // resets glass selection as well
+                this.showMessage('Drink cleared! Select glass.', 1);
+            }
+
+            serveDrink() {
+                   if (this.customerQueue.length === 0) return;
+    
+                    // Checks if glass type is selected
+                    if (!this.currentSection) {
+                        this.showMessage('Please select a glass first!', 2);
+                    }
+
+                    if (this.currentDrink.length === 0 && this.drinkHasParalysis) {
+                        this.showMessage('No drink to serve!', 2);
+                        return;
+                    }
+
+                    //Check with which customer drink matches
+                    let matchedCustomer = this.customerQueue[0];
+
+                    for (let customer of this.customerQueue) {
+                        const drinkSorted = this.currentDrink.sort();
+                        const orderSorted = customer.order.ingredients;
+
+                        const exactMatch =
+                            drinkSorted.length === orderSorted.length &&
+                            drinkSorted.every((ing, idx) => ing == orderSorted[idx]);
+                        
+                        if (exactMatch) {
+                            matchedCustomer = customer;
+                        }
+                    }
+
+                    if (!matchedCustomer) {
+                        this.showMessage('Drink doesn\'t match any order', 2);
+                        return;
+                    }
+
+                    const customer = matchedCustomer;
+
+                    //Calculate complexity of drink bonus 
+                    const complexityBonus = this.currentDrink.reduce((sum, name) => {
+                        const allIngredients = [
+                            ...this.milkshakeIngredients.flavor,
+                            ...this.milkshakeIngredients.topping,
+                            ...this.bobaIngredients.flavor,
+                            ...this.bobaIngredients.pearls,
+                            ...this.bobaIngredients.topping
+                        ];
+                        const ing = allIngredients.find(i => i.name == name.name);
+                        return sum + ing.cost;
+                    }, 1);
+
+                    //for correct alien paralysis. Drink must be correctly made AND include the paralysis drop
+                    const isParalysisDrink = this.drinkHasParalysis || customer.isAlien;
+
+                    if (customer.isAlien && isParalysisDrink) {
+                        const reward = customer.order.baseReward + complexityBonus + "20";
+                        this.coins += reward;
+                        this.score += "100";
+                        this.showMessage(`AN ALIEN CAUGHT! +${reward} coins!`, 2.5);
+                        this.customersServed++;
+
+                    } else if (customer.isAlien && !isParalysisDrink) {
+                        this.showMessage('ALIEN REVEALED! All customers flee!', 4);
+                        this.customerQueue = [];
+                        this.coins = this.coins - 50;
+                        this.score = this.score - 100;
+                        this.alienRevealCooldown = "5";
+                        this.currentDrink = [];
+                        this.currentSection = null;
+                    }
+                }
+                            }
+
+
+//IM CRASHING OUT NONE OF THIS IS WORKINGGGGGGGGGGGG RAHHHHHHHHHHHHHHHHH
+
+
+
+
+
+
+
+
+
 
