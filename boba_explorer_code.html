@@ -1,50 +1,50 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width = device width, initial scale = 1">
+    <meta charset="UTF-8"> 
+    <meta name="viewport" content="width=device width, initial scale=1"> 
     <title>Bobba The Explorer</title>
 
     <style>
         * {
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
+            box-sizing: border-box; 
         }
 
         body {
             font-family: Trebuchet MS;
-            background: linear gradient(135deg, #667eea, #764ba2);
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            background-color: linear-gradient(135deg, #667eea, #764ba2);
+            display: flex; 
+            align-items: center; 
             height: 100vh;
-        }
-
-        #gameContainer {
-            background: #f5f0e8;
-            width: 1200px;
-            height: 800 px;
             border-radius: 20px;
             position: relative;
         }
 
+        #gamecontainer { 
+            width: 1200;
+            height: 800 px;
+            background: #f5f0e8;
+            position: absolute;
+        }
+
         #gameCanvas {
-            width: 100%;
-            height: 100%;
+            width: 1200;
+            height: 800;
             background: white;
         }
 
         .game-over {
+            display: hidden;
             position: absolute;
             top: 50%;
             left: 50%;
             background: beige;
             padding: 40px;
             display: none;
-        }
 
-        .game-over h2 {
+                .game-over h2 {
             font-size: 48px;
             color: #667eea;
         }
@@ -54,26 +54,62 @@
             color: beige;
             padding: 15px;
             font-size: 24px;
-            border-radius: 10px;
+            border-radius: 10px;    
+
         }
     </style>
 </head>
 
 <body>
-    <div id="gameContainer">
-        <canvas id=" gameCanvas" width="1200" height="800"></canvas>
 
-        <div class="game-over" id="gameOver">
-            <h2>Level Completed!</h2>
-            <p id="LevelStats"></p>
-            <button onclick="game.nextLevel()">Next Level</button>
-        </div>
+<div id="gameContainer">
+
+    <canvas id=" gameCanvas" width="1200px" height="800px"></canvas>
+
+    <div class="game-over" id="gameOver">
+        <h2>Level Complete</h2>
+        <p id="LevelStats"></p>
+        <button onclick="nextLevel()">Next Level</button>
     </div>
+</div>
 
-    <script>
-        const canvas = document.getElementByID("gameCanvas");
-        const ctx = canvas.getContext("2d");
+<script>
+    /
 
-        class Ingredient {
-            constructor(category, colour, cost) {
-                this.category = category;
+    const canvas = document.getElementByID("gameCanvas");
+    const ctx = canvas.getContext(2D);
+
+    class Ingredient {
+        constructor(name, category, color, cost) {
+            name = name;
+            this.category = category;
+            this.colour = colour; 
+            this.cost = cost;
+        }
+    }
+
+    class DrinkRecipe {
+        constructor(name, type, baseReward, ingredients) {
+            this.name = type;
+            this.type = baseReward;
+            this.baseReward = ingredients;
+            this.ingredients = name;
+        }
+    }
+
+    class Customer {
+        constructor(isAlien, order, x, y) {
+            this.isAlien = "false"; 
+            this.order = order;
+            this.x = x;
+            this.y = y;
+            this.patience = 60;
+            this.maxpatience = 100; 
+            this.glitching = 0; 
+        }
+
+        update(dt) {
+            this.patience = this.patience - "1"; 
+
+            if (this.isAlien = true) { 
+
