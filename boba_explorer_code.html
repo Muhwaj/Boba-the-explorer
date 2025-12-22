@@ -1,23 +1,23 @@
 <!DOCTYPE html>
-<html lang = "en">
+<html lang="en">
 <head>
-    <meta charset = "UTF-8">
-    <meta name="viewport" content = "width= device-width initial-scale=1.0"> 
-    <title> Bobba The Explorer </title> 
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device width, initial scale =1.0">
+    <title>Bobba The Explorer</title>
     <style>
-        * { 
+        * {
             margin: 0;
             padding: 0;
-            box-sizing: border-box; /* */
+            box-sizing: border-box;
         }
 
         body {
             font-family: 'Trebuchet MS', sans-serif;
-            background: linear-gradient(135deg #667eea 0%, #764ba2 100%); 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             display: flex;
-            justify-content: centre
+            justify-content: center;
             align-items: center;
-            min-height:100 vh; 
+            min-height:100vh;
             /* */
         }
 
@@ -25,7 +25,7 @@
             background: #f5f0e8;
             border-radius: 20px;
             box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            width: 1200; 
+            width: 1200px;
             height: 800 px;
             position: relative;
             /*  */
@@ -40,7 +40,7 @@
         .game-over { /*  */
             position: absolute;
             top: 50%;
-            left: 50%; 
+            left: 50%;
             background: beige;
             padding: 40px;
             text-align: center;
@@ -74,16 +74,14 @@
         <div class="game-over" id="gameOver">
             <h2>Level Completed!</h2>
             <p id="LevelStats"></p>
-            <button onclick="game.nextlevel()">Next Level</button> 
+            <button onclick="game.nextLevel()">Next Level</button>
         </div>
     </div>
 
     <script>
-        const canvas = document.getElementByID("gameCanvas"); 
+        const canvas = document.getElementByID("gameCanvas");
         const ctx = canvas.getContext("2d");
-        <canvas id=" gameCanvas" width="1200px" height="800px"></canvas>
 
-        
         class Ingredient {
             constructor(name, category, colour, cost) {
                 this.name = name;
@@ -97,8 +95,8 @@
             constructor (name, type, baseReward, ingredients) {
                 this.name = name;
                 this.type = type; /* milkshake or boba */
-                this.baseReward = ingredients; 
-                this.ingredients = baseReward;
+                this.baseReward = baseReward;
+                this.ingredients = ingredients;
             }
 
         }
@@ -109,19 +107,20 @@
                 this.order = order;
                 this.x = x;
                 this.y = y;
-                this.patience = "60"; 
-                this.maxpatience = 60; 
-                this.bubbleGreen = 0; 
+                this.patience = 60; //in seconds
+                this.maxpatience = 60;
+                this.bubbleGreen = 0; // from 0 to 1
                 this.glitchTimer = 0;
-                this.gltiching = false; 
+                this.gltiching = false;
+            }
 
             update(dt) {
                 this.patience -= dt;
 
-                if(this.isAlien = true) { 
+                if(this.isAlien) {
                     this.glitchTimer += dt;
                     this.glitching = Math.sin(this.glitchTimer*8) > 0.7;
-                    this.bubbleGreen = Math.min(1, this.bubbleGreen + dt * "0.12"); 
+                    this.bubbleGreen = Math.min(1, this.bubbleGreen + dt * 0.12); 
                 }
             }
 
@@ -130,7 +129,8 @@
                 //CUSTOMER ALIEN SPRITE [YET TO DRAW]
 
                 //DRAW Order Bubble [YET TO DRAW]
-                drawOrderBubble(ctx); 
+                this.drawOrderBubble(ctx);
+
                 //DRAW patience Bar [YET TO DRAW]
                 this.PatienceBar(ctx);
             }
@@ -146,7 +146,7 @@
                 // Bubble color transitions to green for alien customers
                 if (this.isAlien) {
                     const greenAmount = Math.floor(this.bubbleGreen * 200);
-                    ctx.fillStyle = rgb(255 - greenAmount, 255, 255 - greenAmount); 
+                    ctx.fillStyle = `rgb(${255 - greenAmount}, 255, ${255 - greenAmount})`;
                 } else {
                     ctx.fillStyle = '#fff';
                 }
@@ -161,7 +161,7 @@
 
                 // Order text
                 ctx.fillStyle = '#000';
-                ctx.font = 'bold 14px Arial Helvetica sans-serif'; 
+                ctx.font = 'bold 14px Arial, Helvetica, sans-serif';
                 ctx.textAlign = 'center';
                 ctx.fillText(this.order.name, bubbleX, bubbleY + 20);
                 
@@ -188,7 +188,7 @@
                 ctx.fillRect(barX, barY, barWidth, barHeight);
                 
                 // Patience fill
-                const fillWidth = barWidth * (this.patience / this.maxPatience); 
+                const fillWidth = barWidth * (this.patience / this.maxPatience);
                 if (this.patience > 30) {
                     ctx.fillStyle = '#00ff00';
                 } else if (this.patience > 15) {
@@ -206,142 +206,314 @@
             }    
         }
 
+
         class BobbaGame {
             constructor() {
                 this.level = 1;
-                this.coins = 0;
+                this.coins = 10;
                 this.score = 0;
                 this.customersToServe = 5;
-                this.customersServed == 0; 
+                this.customersServed = 0;
 
+                this.sprites = {
+                    // Customer sprites (normal and alien versions)
+                    customerNormal: null,  
+                    customerAlien: null,   
+                    
+                    // Glass selection buttons
+                    milkshakeGlassButton: null,  
+                    bobaGlassButton: null,       
+
+                    // Current drink displayed (on the right)
+                    milkshakeGlass: null,  
+                    bobaGlass: null,       
+
+                    // Paralysis drop
+                    paralysisDrop: null,  
+                    
+                    // Milkshake flavors
+                    milkshakeFlavors: {
+                        chocolate: null,   
+                        vanilla: null,     
+                        mango: null,      
+                        strawberry: null,  
+                    },
+                    
+                    // Milkshake toppings
+                    milkshakeToppings: {
+                        fruit: null,          
+                        whippedCream: null,   
+                        straw: null,          
+                    },
+                    
+                    // Boba flavors
+                    bobaFlavors: {
+                        brownSugar: null,   
+                        tea: null,          
+                        chocolate: null,    
+                        strawberry: null, 
+                        taro: null,         
+                    },
+                    
+                    // Boba pearls
+                    bobaPearls: {
+                        bobaPearls: null,    
+                        poppingBoba: null,   
+                    },
+                    
+                    // Boba toppings
+                    bobaToppings: {
+                        coconutJelly: null,  
+                    }
+                };
+                
+                // Ingredients for MILKSHAKES
+                this.milkshakeIngredients = {
+                    flavor: [
+                        new Ingredient('Chocolate', 'flavor', '#654321', 2),
+                        new Ingredient('Vanilla', 'flavor', '#fff5cc', 2),
+                        new Ingredient('Mango', 'flavor', '#ffdc00', 3),
+                        new Ingredient('Strawberry', 'flavor', '#ff69b4', 2),
+                    ],
+                    topping: [
+                        new Ingredient('Fruit', 'topping', '#ff6347', 1),
+                        new Ingredient('Whipped Cream', 'topping', '#fff', 1),
+                        new Ingredient('Straw', 'topping', '#ffff00', 0),
+                    ]
+                };
+                
+                // Ingredients for BOBA
+                this.bobaIngredients = {
+                    flavor: [
+                        new Ingredient('Brown Sugar', 'flavor', '#8B4513', 2),
+                        new Ingredient('Tea', 'flavor', '#90c090', 2),
+                        new Ingredient('Chocolate', 'flavor', '#654321', 2),
+                        new Ingredient('Strawberry', 'flavor', '#ff69b4', 2),
+                        new Ingredient('Taro', 'flavor', '#c89fd0', 3),
+                    ],
+                    pearls: [
+                        new Ingredient('Boba Pearls', 'pearls', '#000', 2),
+                        new Ingredient('Popping Boba', 'pearls', '#ff69b4', 2),
+                    ],
+                    topping: [
+                        new Ingredient('Coconut Jelly', 'topping', '#f5f5dc', 1),
+                    ]
+                };
+
+                // Paralysis drop 
+                this.paralysisIngredient = new Ingredient('Paralysis Drop', 'special', '#045e04', 0);
+                
+                // Recipes - Milkshakes
+                this.milkshakeRecipes = [
+                    new DrinkRecipe('Chocolate Shake', 'milkshake', ['Chocolate', 'Whipped Cream', 'Straw'], 30),
+                    new DrinkRecipe('Vanilla Shake', 'milkshake', ['Vanilla', 'Whipped Cream', 'Straw'], 30),
+                    new DrinkRecipe('Mango Shake', 'milkshake', ['Mango', 'Whipper Cream', 'Straw'], 35),
+                    new DrinkRecipe('Strawberry Shake', 'milkshake', ['Strawberry', 'Whipped Cream', 'Fruit'], 30),
+                ];
+
+                // Recipes - Boba
+                this.bobaRecipes = [
+                    new DrinkRecipe('Brown Sugar Boba', 'boba', ['Brown Sugar', 'Boba Pearls'], 35),
+                    new DrinkRecipe('Green Tea Boba', 'boba', ['Green Tea', 'Popping Boba', 'Coconut Jelly'], 35),
+                    new DrinkRecipe('Chocolate Boba', 'boba', ['Chocolate', 'Boba Pearls'], 35),
+                    new DrinkRecipe('Strawberry Boba', 'boba', ['Strawberry', 'Popping Boba', 'Coconut Jelly'], 35),
+                    new DrinkRecipe('Taro Boba', 'boba', ['Taro', 'Boba Pearls'], 40),
+                ];
+
+                this.allRecipes = [...this.milkshakeRecipes, ...this.bobaRecipes];
+
+                // Game state
+                this.currentSection = null; // 'milkshake' or 'boba' or null (not selected yet)
+                this.currentDrink = [];
+                this.drinkHasParalysis = false;
+                this.customerQueue = [];
+                this.selectedCategory = null;
+                this.message = '';
+                this.messageTimer = 0;
+                this.alienRevealCooldown = 0; // Cooldown timer for when alien is revealed
+
+                // User interface buttons
+                this.buttons = {};
+                
                 // Initialise
-                this.generateInitialCustomers(); 
-                this.lastTime = Date.now; 
+                this.generateInitialCustomers();
+                this.lastTime = Date.now();
+                
                 // Starting game loop
                 this.gameLoop();
                 
                 // Mouse handling
-                canvas.addEventListener('click', this.handleClick); 
+                canvas.addEventListener('click', (e) => this.handleClick(e));
             }
 
             generateCustomer (position) {
-                const isAlien = Math.random < 0.3; 
-            }  
+                const isAlien = Math.random () < 0.25;
+                const order = this.allRecipes[Math.floor(Math.random() * this.allRecipes.length)];
+
+                const x = 100 + position * 200;
+                const y = 150;
+
+                return new Customer(isAlien, x, y);
+
+            }
 
             generateInitialCustomers() {
                 const num = Math.min(3, this.customersToServe - this.customersServed);
-                for (let i = 0; i <=num; i++) {
-                this.customerQueue.push(this.generateCustomer());
-    }    
-                this.alienRevealCooldown = 0;
-}
+                for (let i = 0; i <num; i++) {
+                    this.customerQueue.push(this.generateCustomer(i));
+                }    
+            }
 
             addIngredient(ingredient) {
                 //Checking if glass type [boba cup OR milkshake glass] is selected first
-                if (this.currentSection == false) {
-                    this.showMessage(
-                        'Please selecte a glass first! (boba cup or milkshake glass)',
-                        "2"
-                    );
+                if (!this.currentSection) {
+                    this.showMessage('Please selecte a glass first! (boba cup or milkshake glass)', 2);
+                    return;
                 }
 
+                                
                 if (ingredient.name === 'Paralysis Drop') {
                     this.drinkHasParalysis = true;
                     this.showMessage('Paralysis Drop Added!', 2);
                 } else {
-                    this.currentDrink.push(ingredient);
+                    this.currentDrink.push(ingredient.name);
                     this.showMessage(`Added ${ingredient.name}`, 1);
                 }
-
-                this.currentDrink.push(ingredient.name);
             }
 
             clearDrink() {
                 this.currentDrink = [];
+                this.drinkHasParalysis = false;
                 this.currentSection = null; // resets glass selection as well
                 this.showMessage('Drink cleared! Select glass.', 1);
             }
 
             serveDrink() {
-                   if (this.customerQueue.length === 0) return;
-    
-                    // Checks if glass type is selected
-                    if (!this.currentSection) {
-                        this.showMessage('Please select a glass first!', 2);
-                    }
+                if (this.customerQueue.length === 0) return;
+                
+                // Checks if glass type is selected
+                if (!this.currentSection) {
+                    this.showMessage('Please select a glass first!', 2);
+                    return;
+                }
 
-                    if (this.currentDrink.length === 0 && this.drinkHasParalysis) {
-                        this.showMessage('No drink to serve!', 2);
-                        return;
-                    }
+                if (this.currentDrink.length === 0 && !this.drinkHasParalysis) {
+                    this.showMessage('No drink to serve!', 2);
+                    return;
+                }
 
-                    //Check with which customer drink matches
-                    let matchedCustomer = this.customerQueue[0];
+                //Check with which customer drink matches
+                let matchedCustomer = null;
 
-                    for (let customer of this.customerQueue) {
-                        const drinkSorted = this.currentDrink.sort();
-                        const orderSorted = customer.order.ingredients;
-
-                        const exactMatch =
-                            drinkSorted.length === orderSorted.length &&
-                            drinkSorted.every((ing, idx) => ing == orderSorted[idx]);
-                        
-                        if (exactMatch) {
-                            matchedCustomer = customer;
-                        }
-                    }
-
-                    if (!matchedCustomer) {
-                        this.showMessage('Drink doesn\'t match any order', 2);
-                        return;
-                    }
-
-                    const customer = matchedCustomer;
-
-                    //Calculate complexity of drink bonus 
-                    const complexityBonus = this.currentDrink.reduce((sum, name) => {
-                        const allIngredients = [
-                            ...this.milkshakeIngredients.flavor,
-                            ...this.milkshakeIngredients.topping,
-                            ...this.bobaIngredients.flavor,
-                            ...this.bobaIngredients.pearls,
-                            ...this.bobaIngredients.topping
-                        ];
-                        const ing = allIngredients.find(i => i.name == name.name);
-                        return sum + ing.cost;
-                    }, 1);
-
-                    //for correct alien paralysis. Drink must be correctly made AND include the paralysis drop
-                    const isParalysisDrink = this.drinkHasParalysis || customer.isAlien;
-
-                    if (customer.isAlien && isParalysisDrink) {
-                        const reward = customer.order.baseReward + complexityBonus + "20";
-                        this.coins += reward;
-                        this.score += "100";
-                        this.showMessage(`AN ALIEN CAUGHT! +${reward} coins!`, 2.5);
-                        this.customersServed++;
-
-                    } else if (customer.isAlien && !isParalysisDrink) {
-                        this.showMessage('ALIEN REVEALED! All customers flee!', 4);
-                        this.customerQueue = [];
-                        this.coins = this.coins - 50;
-                        this.score = this.score - 100;
-                        this.alienRevealCooldown = "5";
-                        this.currentDrink = [];
-                        this.currentSection = null;
+                 for (let customer of this.customerQueue) {
+                    // Checks if drink has exactly the same ingredients (order doesn't matter)
+                    const drinkSorted = this.currentDrink.slice().sort();
+                    const orderSorted = customer.order.ingredients.slice().sort();
+                    
+                    const exactMatch = drinkSorted.length === orderSorted.length &&
+                        drinkSorted.every((ing, idx) => ing === orderSorted[idx]);
+                    
+                    if (exactMatch) {
+                        matchedCustomer = customer;
+                        break;
                     }
                 }
-                            }
 
+                if (!matchedCustomer) {
+                    this.showMessage ('Drink doesn\'t match any order' , 2);
+                    return;
+                }
 
-//IM CRASHING OUT NONE OF THIS IS WORKINGGGGGGGGGGGG RAHHHHHHHHHHHHHHHHH
+                const customer = matchedCustomer;
 
+                //Calculate complexity of drink bonus 
+                const complexityBonus = this.currentDrink.reduce((sum, name) => {
+                    const allIngredients = [
+                        ...this.milkshakeIngredients.flavor,
+                        ...this.milkshakeIngredients.topping,
+                        ...this.bobaIngredients.flavor,
+                        ...this.bobaIngredients.pearls,
+                        ...this.bobaIngredients.topping
+                    ];
+                    const ing = allIngredients.find(i => i.name === name);
+                    return ing ? sum + ing.cost : sum;
+                }, 0);
 
+                //for correct alien paralysis. Drink must be correctly made AND include the paralysis drop
+                const isParalysisDrink = this.drinkHasParalysis;
 
+                if (customer.isAlien && isParalysisDrink) {
+                    // SUCCESS: Caught alien with correct drink + paralysis
+                    const reward = customer.order.baseReward + complexityBonus + 20;
+                    this.coins += reward;
+                    this.score += 100;
+                    this.showMessage(`AN ALIEN CAUGHT! +${reward} coins!`, 2.5);
+                    this.removeCustomer(customer);
 
+                } else if (customer.isAlien && !isParalysisDrink) {
+                    // FAILURE: Alien escapes and all customers run away
+                    this.showMessage('ALIEN REVEALED! All customers flee!', 4);
+                    this.customerQueue = [];
+                    this.coins = Math.max(0, this.coins - 50);
+                    this.score = Math.max(0, this.score - 100);
+                    
+                    // Start 5 second cooldown before new customers appear
+                    this.alienRevealCooldown = 5.0;
+                    
+                    // Clear drink
+                    this.currentDrink = [];
+                    this.drinkHasParalysis = false;
+                    this.currentSection = null;
 
+                    //wait for cool down to finish
+                    return;
 
+                } else if (!customer.isAlien && isParalysisDrink ) {
+                    //LOUD INCORRECT BUZZER. Customer leaves
+                    this.showMessage('CUSTOMER LEAVES', 2.5)
+                    this.coins = Math.max(0, this.coins - 10);
+                    this.removeCustomer(customer);
 
+                } else {
+                    //Correct order for normal customer
+                    const patienceBonus = Math.floor(10 * (customer.patience / customer.maxPatience));
+                    const reward = customer.order.baseReward + complexityBonus + patienceBonus;
+                    this.coins += reward;
+                    this.score += 50;
+                    this.showMessage(`Perfect! +${reward} coins!`, 2);
+                    this.removeCustomer(customer);
 
+                }
 
+                // Clear drink
+                this.currentDrink = [];
+                this.drinkHasParalysis = false;
+                this.currentSection = null; // Reset glass selection after serving
+                
+                // Don't add new customers yet 
+                if (this.alienRevealCooldown > 0) {
+                    return;
+                }
+                
+                // Add new customer 
+                if (this.customersServed < this.customersToServe && this.customerQueue.length < 3) {
+                    this.customerQueue.push(this.generateCustomer(this.customerQueue.length));
+                }
+            }
 
+             removeCustomer(customer) {
+                const index = this.customerQueue.indexOf(customer);
+                if (index > -1) {
+                    this.customerQueue.splice(index, 1);
+                    this.customersServed++;
+                    this.repositionCustomers();
+                }
+            }
+
+            repositionCustomers() {
+                this.customerQueue.forEach((customer, i) => {
+                    customer.x = 100 + i * 200;
+                });
+            }
+
+        
