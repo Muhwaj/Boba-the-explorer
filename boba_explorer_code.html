@@ -516,4 +516,74 @@
                 });
             }
 
-        
+            showMessage(text, duration) {
+                this.message = text;
+                this.messageTimer = duration;
+            }
+
+            arraysEqual(a, b) {
+                if (a.length !== b.length) return false;
+                for (let i = 0; i < a.length; i++) {
+                    if (a[i] !== b[i]) return false;
+                }
+                return true;
+            }
+
+            update(dt) {
+                // Update the message timer
+                if (this.messageTimer > 0) {
+                    this.messageTimer -= dt;
+                    if (this.messageTimer <= 0) {
+                        this.message = '';
+                    }
+                }
+                
+                // Update the alien reveal cooldown
+                if (this.alienRevealCooldown > 0) {
+                    this.alienRevealCooldown -= dt;
+                    
+                    // When cooldown ends generate more customers 
+                    if (this.alienRevealCooldown <= 0 && this.customerQueue.length === 0) {
+                        const remaining = this.customersToServe - this.customersServed;
+                        for (let i = 0; i < Math.min(3, remaining); i++) {
+                            this.customerQueue.push(this.generateCustomer(i));
+                        }
+                        this.showMessage('New customers arriving...', 2);
+                    }
+                    return; // Don't update the customers during cooldown
+                }
+                
+                // Update the customers
+                for (let i = this.customerQueue.length - 1; i >= 0; i--) {
+                    const customer = this.customerQueue[i];
+                    customer.update(dt);
+                    
+                    // Remove customers if they run out of patience
+                    if (customer.patience <= 0) {
+                        this.showMessage('Customer left! Out of patience.', 2);
+                        this.customerQueue.splice(i, 1);
+                        this.customersServed++;
+                        this.coins = Math.max(0, this.coins - 15);
+                        this.repositionCustomers();
+                        
+                        // Add more customers
+                        if (this.customersServed < this.customersToServe && this.customerQueue.length < 3) {
+                            this.customerQueue.push(this.generateCustomer(this.customerQueue.length));
+                        }
+                    }
+                }
+                
+                // Check if level complete
+                if (this.customersServed >= this.customersToServe) {
+                    this.levelComplete();
+                }
+            }
+
+            levelComplete() {
+                document.getElementById('levelStats').innerHTML = `
+                    <p style="font-size: 24px; margin: 20px 0;">Level ${this.level} Complete!</p>
+                    <p>Coins Earned: ${this.coins}</p>
+                    <p>Total Score: ${this.score}</p>
+                `;
+                document.getElementById('gameOver').style.display = 'block';
+            }
