@@ -587,3 +587,132 @@
                 `;
                 document.getElementById('gameOver').style.display = 'block';
             }
+
+            nextLevel() {
+                document.getElementById('gameOver').style.display = 'none';
+                this.level++;
+                this.customersToServe += 2;
+                this.customersServed = 0;
+                this.customerQueue = [];
+                this.currentDrink = [];
+                this.drinkHasParalysis = false;
+                this.currentSection = null; // Reset glass selection for the next level 
+                this.generateInitialCustomers();
+                this.showMessage(`Level ${this.level}! Serve ${this.customersToServe} customers!`, 3);
+            }
+
+            draw() {
+                // Clear the canvas
+                ctx.fillStyle = '#f5f0e8';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                // Need to draw customers [DRAW]
+                this.customerQueue.forEach(customer => customer.draw(ctx));
+                
+                // Need to draw UI [DRAWWWW]
+                this.drawStats();
+                this.drawSections();
+                this.drawDrinkStation();
+                this.drawMessage();
+            }
+
+            drawStats() {
+                ctx.fillStyle = '#000';
+                ctx.font = 'Trebuchet MS', 'sans-serif';
+                ctx.textAlign = 'left';
+                ctx.fillText(`Level: ${this.level}`, 20, 35);
+                
+                ctx.fillStyle = '#ffd700';
+                ctx.fillText(`💰 Coins: ${this.coins}`, 180, 35);
+                
+                ctx.fillStyle = '#000';
+                ctx.fillText(`Score: ${this.score}`, 420, 35);
+                
+                ctx.font = '18px Trebuchet MS', 'sans-serif';
+                ctx.fillText(`Customers: ${this.customersServed}/${this.customersToServe}`, 20, 65);
+            }
+
+            drawSections() {
+                const sectionY = 250;
+                const sectionHeight = 520; 
+                
+                // Milkshake Section
+                const milkshakeX = 50;
+                const milkshakeW = 320;
+                
+                ctx.fillStyle = '#ffd4e5';
+                ctx.beginPath();
+                ctx.roundRect(milkshakeX, sectionY, milkshakeW, sectionHeight, 15);
+                ctx.fill();
+                ctx.strokeStyle = '#000';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+                
+                // Title with button
+                ctx.fillStyle = '#000';
+                ctx.font = 'bold 24px Comic Sans MS';
+                ctx.textAlign = 'left';
+                ctx.fillText('🥤 MILKSHAKE', milkshakeX + 20, sectionY + 35);
+                
+                
+                // MILKSHAKE GLASS BUTTON SPRITE
+                
+                const milkshakeBtn = {x: milkshakeX + 240, y: sectionY + 15, w: 60, h: 35};
+                this.buttons.select_milkshake = milkshakeBtn;
+                
+                // PEPLACE WITH MILKSHAKE SPRITES
+                
+                
+                // Current placeholder FOR NOW (REPLACE THIS):
+                ctx.fillStyle = this.currentSection === 'milkshake' ? '#ff69b4' : '#fff';
+                ctx.beginPath();
+                ctx.roundRect(milkshakeBtn.x, milkshakeBtn.y, milkshakeBtn.w, milkshakeBtn.h, 5);
+                ctx.fill();
+                ctx.strokeStyle = '#000';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+                
+                ctx.fillStyle = '#000';
+                ctx.font = 'bold 14px Comic Sans MS';
+                ctx.textAlign = 'center';
+                ctx.fillText('SELECT', milkshakeBtn.x + milkshakeBtn.w/2, milkshakeBtn.y + 22);
+            
+            
+                
+                
+                // Need to Draw ingredients [milkshake ✅ still need to draw boba]
+                this.drawSectionIngredients(milkshakeX, sectionY + 70, milkshakeW, this.milkshakeIngredients, 'milkshake');
+                
+            
+                // PARALYSIS DROP SPRITE [REPLACE WITH DRAWING]
+                
+                const paraX = 390;
+                const paraY = sectionY + sectionHeight/2 - 60;
+                const paraW = 100;
+                const paraH = 120;
+                
+                // PLACEHOLDER: Replace WITH SPRITE
+                
+                
+                //  (REPLACE THIS):
+                ctx.fillStyle = '#00ff00';
+                ctx.beginPath();
+                ctx.roundRect(paraX, paraY, paraW, paraH, 10);
+                ctx.fill();
+                ctx.strokeStyle = '#000';
+                ctx.lineWidth = 3;
+                ctx.stroke();
+                
+
+
+
+
+
+
+
+
+
+
+
+
+        
