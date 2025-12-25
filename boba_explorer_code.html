@@ -650,7 +650,7 @@
                 
                 // Title with button
                 ctx.fillStyle = '#000';
-                ctx.font = 'bold 24px Comic Sans MS';
+                ctx.font = 'bold 24px Trebuchet MS', 'sans-serif';
                 ctx.textAlign = 'left';
                 ctx.fillText('🥤 MILKSHAKE', milkshakeX + 20, sectionY + 35);
                 
@@ -673,7 +673,7 @@
                 ctx.stroke();
                 
                 ctx.fillStyle = '#000';
-                ctx.font = 'bold 14px Comic Sans MS';
+                ctx.font = 'bold 14px Trebuchet MS', 'sans-serif';
                 ctx.textAlign = 'center';
                 ctx.fillText('SELECT', milkshakeBtn.x + milkshakeBtn.w/2, milkshakeBtn.y + 22);
             
@@ -702,17 +702,64 @@
                 ctx.strokeStyle = '#000';
                 ctx.lineWidth = 3;
                 ctx.stroke();
+
+                ctx.fillStyle = '#000';
+                ctx.font = 'bold 16px Trebuchet MS', 'sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText('☠️', paraX + paraW/2, paraY + 35);
+                ctx.font = 'bold 12px Trebuchet MS', 'sans-serif';
+                ctx.fillText('Paralysis', paraX + paraW/2, paraY + 60);
+                ctx.fillText('Drop', paraX + paraW/2, paraY + 75);
+                
+                
+                const paraBtn = {x: paraX, y: paraY, w: paraW, h: paraH};
+                this.buttons.paralysis = {rect: paraBtn, ingredient: this.paralysisIngredient};
+                
+                // Boba Section
+                const bobaX = 510;
+                const bobaW = 320;
+                
+                ctx.fillStyle = '#d4f4dd';
+                ctx.beginPath();
+                ctx.roundRect(bobaX, sectionY, bobaW, sectionHeight, 15);
+                ctx.fill();
+                ctx.strokeStyle = '#000';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+                
+                // Title with button
+                ctx.fillStyle = '#000';
+                ctx.font = 'bold 24px Comic Sans MS';
+                ctx.textAlign = 'left';
+                ctx.fillText('🧋 BOBA', bobaX + 20, sectionY + 35);
+                
+                
+                const bobaBtn = {x: bobaX + 220, y: sectionY + 15, w: 60, h: 35};
+                this.buttons.select_boba = bobaBtn;
+                
+                
+                
+                // (REPLACE THIS):
+                ctx.fillStyle = this.currentSection === 'boba' ? '#00aa00' : '#fff';
+                ctx.beginPath();
+                ctx.roundRect(bobaBtn.x, bobaBtn.y, bobaBtn.w, bobaBtn.h, 5);
+                ctx.fill();
+                ctx.strokeStyle = '#000';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+                
+                ctx.fillStyle = '#000';
+                ctx.font = 'bold 14px Trebuchet MS', 'sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText('SELECT', bobaBtn.x + bobaBtn.w/2, bobaBtn.y + 22);
+                
+                
+                // Draw ingredients
+                this.drawSectionIngredients(bobaX, sectionY + 70, bobaW, this.bobaIngredients, 'boba');
+            }
+
+            drawSectionIngredients(x,y, width, ingredients, section) {
+                let yOffset = y; 
+            }
                 
 
-
-
-
-
-
-
-
-
-
-
-
-        
